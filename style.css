@@ -1,0 +1,830 @@
+/* ==========================================
+   CONFIGURAÇÕES GERAIS
+========================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    background: #050505;
+
+    color: #b8b8b8;
+
+    font-family: "VT323", monospace;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: flex-start;
+
+    padding: 25px;
+
+    overflow-x: hidden;
+
+    overflow-y: auto;
+
+    position: relative;
+}
+
+
+/* ==========================================
+   CONTAINER
+========================================== */
+
+.container {
+
+    width: 100%;
+
+    max-width: 720px;
+
+    position: relative;
+
+    z-index: 5;
+}
+
+
+/* ==========================================
+   CABEÇALHO
+========================================== */
+
+.header {
+
+    margin-bottom: 70px;
+
+    text-align: center;
+
+    opacity: 0.8;
+}
+
+
+.title {
+
+    font-size: 25px;
+
+    letter-spacing: 7px;
+
+    color: #c4c4c4;
+
+    text-shadow:
+        1px 0 #666,
+        -1px 0 #222;
+}
+
+
+.progress {
+
+    margin-top: 15px;
+
+    font-size: 16px;
+
+    letter-spacing: 4px;
+
+    color: #555;
+}
+
+
+/* ==========================================
+   PERGUNTA
+========================================== */
+
+.question-box {
+    opacity: 1;
+
+    transform: translateY(0);
+
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
+}
+
+
+.question-box.fade {
+    opacity: 0;
+
+    transform: translateY(8px);
+}
+
+
+.question-box.fade {
+
+    opacity: 0;
+
+    transform: translateY(5px);
+
+}
+
+
+.question {
+
+    font-size: 28px;
+
+    line-height: 1.45;
+
+    color: #c8c8c8;
+
+    margin-bottom: 35px;
+
+    text-shadow:
+        1px 0 rgba(255,255,255,0.05),
+        -1px 0 rgba(255,255,255,0.03);
+}
+
+
+.question strong {
+
+    color: #e0e0e0;
+
+    font-weight: normal;
+}
+
+
+.question em {
+
+    color: #888;
+
+}
+
+
+/* ==========================================
+   INSTRUÇÃO
+========================================== */
+
+.instruction {
+
+    font-size: 17px;
+
+    color: #555;
+
+    margin-bottom: 25px;
+
+}
+
+
+/* ==========================================
+   OPÇÕES
+========================================== */
+
+.options {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+}
+
+
+.option {
+
+    width: 100%;
+
+    padding: 16px 18px;
+
+    background: rgba(255,255,255,0.01);
+
+    border: 1px solid #292929;
+
+    color: #888;
+
+    font-family: inherit;
+
+    font-size: 19px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border 0.2s ease,
+        color 0.2s ease;
+
+}
+
+
+.option:hover {
+
+    background: rgba(255,255,255,0.04);
+
+    border-color: #666;
+
+    color: #ddd;
+
+}
+
+
+.option.selected {
+
+    background: rgba(255,255,255,0.06);
+
+    border-color: #aaa;
+
+    color: #eee;
+
+}
+
+
+/* ==========================================
+   CAMPO DE TEXTO
+========================================== */
+
+.text-answer {
+
+    width: 100%;
+
+    background: transparent;
+
+    border: none;
+
+    border-bottom: 1px solid #444;
+
+    color: #ddd;
+
+    font-family: inherit;
+
+    font-size: 30px;
+
+    padding: 10px 2px;
+
+    outline: none;
+
+}
+
+
+.text-answer:focus {
+
+    border-bottom-color: #aaa;
+
+}
+
+
+.text-answer::placeholder {
+
+    color: #333;
+
+}
+
+
+/* ==========================================
+   ERROS
+========================================== */
+
+.error {
+
+    margin-top: 12px;
+
+    min-height: 20px;
+
+    font-size: 16px;
+
+    color: #666;
+
+}
+
+
+/* ==========================================
+   BOTÃO
+========================================== */
+
+.continue {
+    
+    display: block;
+    
+    margin-left: auto;
+    
+    margin-right: auto;
+
+    margin-top: 45px;
+
+    margin-bottom: 40px;
+
+    padding: 12px 25px;
+
+    background: transparent;
+
+    border: 1px solid #444;
+
+    color: #999;
+
+    font-family: inherit;
+
+    font-size: 18px;
+
+    letter-spacing: 3px;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+
+}
+
+
+.continue:hover {
+
+    background: #111;
+
+    border-color: #999;
+
+    color: #eee;
+
+}
+
+
+/* ==========================================
+   RUÍDO
+========================================== */
+
+.noise {
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 10;
+
+    opacity: 0.08;
+
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+
+    animation: noiseMove 0.15s infinite steps(2);
+
+}
+
+
+@keyframes noiseMove {
+
+    0% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(2%, -1%);
+    }
+
+    50% {
+        transform: translate(-1%, 2%);
+    }
+
+    75% {
+        transform: translate(1%, 1%);
+    }
+
+    100% {
+        transform: translate(-2%, -1%);
+    }
+
+}
+
+
+/* ==========================================
+   LINHAS DE CRT
+========================================== */
+
+.scanlines {
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 11;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.025),
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+
+}
+
+
+/* ==========================================
+   PEQUENAS FALHAS
+========================================== */
+
+body::before {
+
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 12;
+
+    opacity: 0.03;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255,255,255,0.2) 50%,
+            transparent 100%
+        );
+
+    animation: screenMove 8s infinite linear;
+
+}
+
+
+@keyframes screenMove {
+
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(100%);
+    }
+
+}
+
+
+/* ==========================================
+   CELULAR
+========================================== */
+
+@media (max-width: 600px) {
+
+    body {
+
+        padding: 20px;
+
+        align-items: flex-start;
+
+        padding-top: 70px;
+
+    }
+
+
+    .header {
+
+        margin-bottom: 50px;
+
+    }
+
+
+    .title {
+
+        font-size: 19px;
+
+        letter-spacing: 5px;
+
+    }
+
+
+    .question {
+
+        font-size: 23px;
+
+    }
+
+
+    .option {
+
+        font-size: 18px;
+
+        padding: 15px;
+
+    }
+
+
+    .text-answer {
+
+        font-size: 26px;
+
+    }
+
+}
+
+/* ==========================================
+   FRAGMENTOS
+========================================== */
+
+.fragment {
+    position: fixed;
+
+    width: 3px;
+    height: 3px;
+
+    background: #bdbdbd;
+
+    pointer-events: none;
+
+    z-index: 50;
+
+    animation: fragment-fly 0.7s ease-out forwards;
+}
+
+
+@keyframes fragment-fly {
+
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(1);
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(
+                var(--x),
+                var(--y)
+            )
+            rotate(var(--rotation))
+            scale(0);
+    }
+
+}
+/* ==========================================
+   TELA PRETA / MENSAGENS
+========================================== */
+
+.black-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: #000;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    padding: 30px;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition: opacity 1.3s ease;
+
+    z-index: 100;
+
+}
+
+
+.black-screen.active {
+
+    opacity: 1;
+
+    visibility: visible;
+
+}
+
+
+.black-screen div {
+
+    max-width: 700px;
+
+    color: #aaa;
+
+    font-family: "VT323", monospace;
+
+    font-size: 24px;
+
+    line-height: 1.6;
+
+    letter-spacing: 1px;
+
+}
+.shake-word {
+    display: inline-block;
+    animation: subtleShake 0.12s infinite;
+}
+
+@keyframes subtleShake {
+
+    0% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(-1px, 0);
+    }
+
+    50% {
+        transform: translate(1px, 0);
+    }
+
+    75% {
+        transform: translate(0, 1px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+
+}
+.text-answer {
+    width: 100%;
+    min-height: 100px;
+
+    box-sizing: border-box;
+
+    resize: vertical;
+
+    font-family: inherit;
+}
+/* =========================================================
+   TELA INICIAL — OS ECOS DE AMÉLIE
+========================================================= */
+
+.start-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 24px;
+    box-sizing: border-box;
+
+    background: #000;
+    color: #fff;
+
+    overflow-y: auto;
+}
+
+.start-content {
+    width: 100%;
+    max-width: 620px;
+
+    text-align: center;
+}
+
+.start-subtitle {
+    margin-bottom: 18px;
+
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+
+    opacity: 0.55;
+}
+
+.start-title {
+    margin: 0;
+
+    font-size: clamp(2.2rem, 10vw, 5.8rem);
+    line-height: 0.95;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.start-warning {
+    margin: 28px 0 40px;
+
+    font-size: 0.9rem;
+    line-height: 1.5;
+
+    opacity: 0.55;
+}
+
+.start-label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+
+    opacity: 0.75;
+}
+
+.start-name {
+    display: block;
+
+    width: 100%;
+
+    padding: 15px 14px;
+    box-sizing: border-box;
+
+    background: #0a0a0a;
+    color: #fff;
+
+    border: 1px solid #333;
+    border-radius: 3px;
+
+    font-family: inherit;
+    font-size: 1rem;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.start-name:focus {
+    border-color: #777;
+    background: #101010;
+}
+
+.start-button {
+    display: block;
+
+    width: 100%;
+
+    margin-top: 18px;
+    padding: 16px 20px;
+
+    background: #fff;
+    color: #000;
+
+    border: none;
+    border-radius: 3px;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.15s ease;
+}
+
+.start-button:hover {
+    opacity: 0.88;
+}
+
+.start-button:active {
+    transform: scale(0.99);
+}
+
+.start-error {
+    min-height: 20px;
+
+    margin: 12px 0 0;
+
+    color: #aaa;
+
+    font-size: 0.8rem;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .start-screen {
+        align-items: center;
+
+        padding:
+            24px
+            18px
+            calc(24px + env(safe-area-inset-bottom));
+    }
+
+    .start-title {
+        font-size: clamp(2rem, 13vw, 4rem);
+    }
+
+    .start-warning {
+        margin:
+            22px 0
+            32px;
+    }
+
+}

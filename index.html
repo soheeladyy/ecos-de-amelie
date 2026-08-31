@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Ecos de Amélie</title>
+
+    <!-- Fonte pixelada -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+    <!-- =========================================================
+     PRÉ-TELA — SÓ TÍTULO, PARA A PESSOA TOCAR E LIBERAR O ÁUDIO
+========================================================= -->
+
+<div id="tapScreen" class="start-screen tap-screen">
+
+    <div class="start-content">
+
+        <div class="start-subtitle">
+            UMA EXPERIÊNCIA NARRATIVA
+        </div>
+
+        <h1 class="start-title">
+            OS ECOS DE AMÉLIE
+        </h1>
+
+        <p class="tap-instruction">
+            toque para começar
+        </p>
+
+    </div>
+
+</div>
+
+    <!-- =========================================================
+     TELA INICIAL — OS ECOS DE AMÉLIE
+========================================================= -->
+
+<div id="startScreen" class="start-screen">
+
+    <div class="start-content">
+
+        <div class="start-subtitle">
+            UMA EXPERIÊNCIA NARRATIVA
+        </div>
+
+        <h1 class="start-title">
+            OS ECOS DE AMÉLIE
+        </h1>
+
+        <p class="start-warning">
+            Recomendamos o uso de fones de ouvido.
+        </p>
+
+        <label
+            for="playerName"
+            class="start-label"
+        >
+            COMO DEVEMOS CHAMAR VOCÊ?
+        </label>
+
+        <input
+            id="playerName"
+            class="start-name"
+            type="text"
+            maxlength="40"
+            autocomplete="name"
+            placeholder="Seu nome..."
+        >
+
+        <p
+            id="startError"
+            class="start-error"
+            aria-live="polite"
+        ></p>
+
+        <button
+            id="startButton"
+            class="start-button"
+            type="button"
+        >
+            COMEÇAR
+        </button>
+
+    </div>
+
+</div>
+    <div id="blackScreen" class="black-screen">
+    <div id="blackMessage"></div>
+    </div>
+
+    <!-- Ruído da tela -->
+    <div class="noise"></div>
+
+    <!-- Linhas de CRT -->
+    <div class="scanlines"></div>
+
+
+    <main class="container">
+
+        <header class="header">
+
+            <div class="title">
+                ECOS DE AMÉLIE
+            </div>
+
+            <div
+                class="progress"
+                id="progress"
+            >
+                01 / 05
+            </div>
+
+        </header>
+
+
+        <section
+        
+            class="question-box"
+            id="questionBox"
+        >
+
+            <div
+                class="question"
+                id="question"
+            ></div>
+
+            <div
+                class="instruction"
+                id="instruction"
+            ></div>
+
+            <div
+                class="options"
+                id="options"
+            ></div>
+
+            <div
+                class="error"
+                id="error"
+            ></div>
+
+            <button
+                class="continue"
+                id="continueButton"
+            >
+                CONTINUAR
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
