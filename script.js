@@ -1319,6 +1319,51 @@ function getScoreLevel(score) {
 
 
 // ==========================================
+// TRAÇO PSICOLÓGICO DOMINANTE
+// ==========================================
+
+function getDominantPsychTrait() {
+
+    const { paranoia, vergonha, empatia } = psychScores;
+
+    if (paranoia > vergonha && paranoia > empatia) {
+        return "paranoia";
+    }
+
+    if (vergonha > paranoia && vergonha > empatia) {
+        return "vergonha";
+    }
+
+    if (empatia > paranoia && empatia > vergonha) {
+        return "empatia";
+    }
+
+    return "equilibrado";
+}
+
+
+// ==========================================
+// BUSCAR RESPOSTA NO LOG PELO RÓTULO
+// ==========================================
+// Usado pra recuperar respostas específicas (ex: pergunta 21, 30)
+// na hora de montar o texto final, sem precisar caçar índice em
+// `answers` (que mistura formatos, como os comentários do arquivo
+// já deixam claro).
+
+function getAnswerByLabel(label) {
+
+    for (let i = answersLog.length - 1; i >= 0; i--) {
+
+        if (answersLog[i].pergunta === label) {
+            return answersLog[i].resposta;
+        }
+    }
+
+    return null;
+}
+
+
+// ==========================================
 // TELA PRETA
 // ==========================================
 
@@ -4234,7 +4279,7 @@ function handleQuestionFifteen() {
 
     blackScreenMessage(
         `
-        Você entende agora o que fez.
+        Você entende agora, o que você fez?
         `,
 
         3000,
@@ -4310,11 +4355,12 @@ function handleQuestionThirty() {
         `
         Existe mais uma coisa que você precisa saber.
         `,
-        playSound("intro");
 
         3000,
 
         function() {
+
+            playSound("intro");
 
             questionElement.innerHTML = `
                 Você nunca perguntou o nome de quem pagou por
@@ -4463,46 +4509,57 @@ function generateReportText() {
     lines.push("Enfrentou: " + fightCount);
     lines.push("Fugiu/Evitou: " + flightCount);
     lines.push("Congelou: " + freezeCount);
-    lines.push("");
     lines.push("Classificação predominante: " + getFearProfileType());
     lines.push("");
     lines.push("----------------------------------------");
+    lines.push("EIXOS PSICOLÓGICOS (paranoia / vergonha / empatia)");
+    lines.push("----------------------------------------");
     lines.push("");
-    lines.push("Observação: este é um checkpoint. O formulário");
-    lines.push("completo segue até a pergunta 25/30 — este");
-    lines.push("relatório cobre apenas o arco do medo (1 a 15).");
+    lines.push("Paranoia: " + psychScores.paranoia + "/10 (" + getScoreLevel(psychScores.paranoia) + ")");
+    lines.push("Vergonha: " + psychScores.vergonha + "/10 (" + getScoreLevel(psychScores.vergonha) + ")");
+    lines.push("Empatia: " + psychScores.empatia + "/10 (" + getScoreLevel(psychScores.empatia) + ")");
+    lines.push("Traço dominante: " + getDominantPsychTrait());
+    lines.push("");
 
     return lines.join("\n");
 }
 
 function generateWhatsAppSummary() {
 
-    const type =
+    const fearType =
         getFearProfileType();
 
-    const typeLabel = {
+    const fearLabel = {
 
-        enfrentador:
-            "Enfrentador(a) — tende a encarar o medo de frente",
+        enfrentador: "Enfrentador(a)",
 
-        evasivo:
-            "Evasivo(a) — tende a evitar/recuar diante do medo",
+        evasivo: "Evasivo(a)",
 
-        paralisado:
-            "Paralisante — tende a travar sob pressão",
+        paralisado: "Paralisante",
 
-        misto:
-            "Perfil misto — alterna entre encarar, fugir e travar"
+        misto: "Perfil misto"
 
-    }[type];
+    }[fearType];
+
+    const traitLabel = {
+
+        paranoia: "tende à paranoia",
+
+        vergonha: "tende à vergonha/culpa",
+
+        empatia: "tende à empatia",
+
+        equilibrado: "sem traço dominante claro"
+
+    }[getDominantPsychTrait()];
 
     return (
-        "Perfil de medo — " + (session.nome || "jogador(a)") + "\n"
-        + typeLabel + "\n"
+        "Perfil — " + (session.nome || "jogador(a)") + "\n"
+        + fearLabel + " diante do medo, " + traitLabel + "\n"
         + "Enfrentou: " + fightCount
         + " | Fugiu: " + flightCount
         + " | Congelou: " + freezeCount + "\n"
-        + "(relatório completo em .txt disponível com o mestre)"
+        + "(relatório completo em .txt com o mestre)"
     );
 
 }
@@ -4547,43 +4604,231 @@ function shareReportOnWhatsApp(text) {
 
 
 // ==========================================
-// CHECKPOINT DO ARCO "MEDO"
+// FECHAMENTO — LINHA POR TRAÇO DOMINANTE
 // ==========================================
-// finishQuestionnaire() é chamada automaticamente por nextQuestion()
-// quando a última pergunta do array `questions` é respondida. Por
-// enquanto, a última pergunta é a 15 — então isso NÃO é o fim do
-// formulário completo (que vai até a pergunta 25/30), é só o fim
-// do arco do medo. Quando as próximas perguntas forem escritas,
-// basta acrescentá-las ao array `questions`; esta tela de
-// checkpoint vai automaticamente "andar" para o final de verdade
-// até lá.
+// Cada eixo psicológico devolve uma leitura diferente do mesmo
+// fato: alguém pagou o preço, e o jogador nunca quis olhar
+// direito pra isso. "equilibrado" cobre o empate entre os três.
 
-function finishQuestionnaire() {
+const CLOSING_TRAIT_LINES = {
 
-    showFearArcCheckpoint();
+    paranoia: `
+        Você passou dias sentindo que estava sendo observado.<br><br>
+
+        Talvez estivesse mesmo.<br><br>
+
+        Mas o único olhar que você devia ter seguido
+        não estava nas sombras.<br><br>
+
+        Estava em quem parou de te olhar do mesmo jeito.
+    `,
+
+    vergonha: `
+        Você já ensaiou a versão que contaria,
+        se alguém perguntasse.<br><br>
+
+        Editada.<br>
+        Mais fácil de engolir.<br><br>
+
+        Só que a pessoa que faria essa pergunta
+        já não está mais por perto pra ouvir a resposta.
+    `,
+
+    empatia: `
+        Você pensou em quem podia ter perdido alguma coisa
+        por sua causa.<br><br>
+
+        No desconhecido.<br>
+        No nome que talvez tivesse sido trocado por
+        <strong>[RESPOSTA]</strong>.<br><br>
+
+        Só não pensou que pudesse ser alguém
+        que você já conhecia pelo nome.
+    `,
+
+    equilibrado: `
+        Você não travou em um sentimento só.<br><br>
+
+        Desconfiou um pouco.<br>
+        Escondeu um pouco.<br>
+        Se importou um pouco.<br><br>
+
+        O suficiente pra nunca juntar as peças a tempo
+        de fazer alguma coisa a respeito.
+    `
+
+};
+
+function buildFinalRevealText() {
+
+    const trait =
+        getDominantPsychTrait();
+
+    const traitLine =
+        CLOSING_TRAIT_LINES[trait]
+            .replaceAll(
+                "[RESPOSTA]",
+                escapeHTML(getFirstAnswer())
+            );
+
+    const distanceAnswer =
+        getAnswerByLabel("Pergunta 21");
+
+    const wantedToKnow =
+        getAnswerByLabel("30 - Revelação final");
+
+    let distanceLine = "";
+
+    if (distanceAnswer === "Ela sabe o que eu fiz.") {
+
+        distanceLine = `
+            Você disse, na hora, que ela sabia o que você
+            tinha feito.<br><br>
+
+            Você estava certo.<br>
+            Só errou o motivo.
+        `;
+
+    } else if (distanceAnswer === "Talvez ela tenha percebido que eu mudei.") {
+
+        distanceLine = `
+            Você achou que ela tinha percebido uma mudança
+            em você.<br><br>
+
+            Não era em você que tinha alguma coisa diferente.<br><br>
+
+            Era o que faltava nela.
+        `;
+
+    } else {
+
+        distanceLine = `
+            Você disse que não tinha nada a ver com você.<br><br>
+
+            Você estava errado.
+        `;
+
+    }
+
+    let closingLine = "";
+
+    if (wantedToKnow === "Sim.") {
+
+        closingLine = `
+            Você disse que precisava saber quem foi.<br><br>
+
+            Então saiba: foi alguém que se afastou de você
+            sem dar explicação nenhuma — bem na época em que
+            <strong>${escapeHTML(getFirstAnswer())}</strong>
+            voltou.<br><br>
+
+            Você só nunca juntou as duas coisas.
+        `;
+
+    } else {
+
+        closingLine = `
+            Você disse que preferia não saber.<br><br>
+
+            Não importa.<br><br>
+
+            Você já sabe, faz tempo — só nunca deixou esse
+            pensamento chegar até o fim.
+        `;
+
+    }
+
+    return (
+        traitLine
+        + "<br><br>"
+        + distanceLine
+        + "<br><br>"
+        + closingLine
+    );
 
 }
 
-function showFearArcCheckpoint() {
+
+// ==========================================
+// TELA FINAL
+// ==========================================
+// finishQuestionnaire() é chamada automaticamente por
+// nextQuestion() quando a última pergunta do array `questions` é
+// respondida. Isso é o fim de verdade do formulário (pergunta 30)
+// — não existe mais um checkpoint intermediário aqui, então o tom
+// precisa fechar peso, não abrir espaço pra continuar depois.
+
+function finishQuestionnaire() {
+
+    showFinalClosing();
+
+}
+
+function showFinalClosing() {
 
     questionBox.classList.remove("fade");
 
-    questionElement.innerHTML =
-        "Por enquanto, é só isso.";
-
-    instructionElement.textContent =
-        "";
-
-    optionsElement.innerHTML =
-        "";
-
-    errorElement.textContent =
-        "";
-
-    continueButton.style.display =
-        "none";
+    continueButton.style.display = "none";
+    optionsElement.innerHTML = "";
+    errorElement.textContent = "";
+    instructionElement.textContent = "";
 
     updateProgress(questions.length);
+
+    blackScreenMessage(
+        `
+        Não há mais perguntas.
+        `,
+
+        2500,
+
+        function() {
+
+            blackScreenMessage(
+                `
+                Mas ainda tem uma coisa que você vai carregar
+                depois de fechar isso aqui.
+                `,
+
+                3500,
+
+                function() {
+
+                    questionElement.innerHTML =
+                        buildFinalRevealText();
+
+                    instructionElement.textContent = "";
+
+                    optionsElement.innerHTML = "";
+
+                    showFinalActions();
+
+                }
+            );
+
+        }
+    );
+
+}
+
+function showFinalActions() {
+
+    const closingNote =
+        document.createElement("p");
+
+    closingNote.className =
+        "instruction";
+
+    closingNote.style.marginTop =
+        "1.5rem";
+
+    closingNote.innerHTML = `
+        Isso fica registrado, se você quiser guardar
+        ou mostrar pra alguém.<br>
+        Não precisa ser agora.
+    `;
+
+    optionsElement.appendChild(closingNote);
 
     const report =
         generateReportText();
@@ -4591,50 +4836,37 @@ function showFearArcCheckpoint() {
     const downloadBtn =
         document.createElement("button");
 
-    downloadBtn.className =
-        "option";
+    downloadBtn.className = "option";
+    downloadBtn.textContent = "Guardar o que você fez (.txt)";
 
-    downloadBtn.textContent =
-        "Baixar relatório (.txt)";
+    downloadBtn.addEventListener("click", function() {
 
-    downloadBtn.addEventListener(
-        "click",
-        function() {
+        playSound("click");
 
-            playSound("click");
+        downloadReportFile(
+            getReportFilename(),
+            report
+        );
 
-            downloadReportFile(
-                getReportFilename(),
-                report
-            );
-
-        }
-    );
+    });
 
     const whatsappBtn =
         document.createElement("button");
 
-    whatsappBtn.className =
-        "option";
+    whatsappBtn.className = "option";
+    whatsappBtn.textContent = "Mandar pra alguém";
 
-    whatsappBtn.textContent =
-        "Compartilhar resumo no WhatsApp";
+    whatsappBtn.addEventListener("click", function() {
 
-    whatsappBtn.addEventListener(
-        "click",
-        function() {
+        playSound("click");
 
-            playSound("click");
+        shareReportOnWhatsApp(
+            generateWhatsAppSummary()
+        );
 
-            shareReportOnWhatsApp(
-                generateWhatsAppSummary()
-            );
-
-        }
-    );
+    });
 
     optionsElement.appendChild(downloadBtn);
-
     optionsElement.appendChild(whatsappBtn);
 
 }
