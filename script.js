@@ -4310,7 +4310,7 @@ function handleQuestionThirty() {
         `
         Existe mais uma coisa que você precisa saber.
         `,
-        playSound("intro"),
+        playSound("intro");
 
         3000,
 
